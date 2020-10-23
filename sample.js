@@ -8,8 +8,8 @@ const UpdateHelper = require(".")
         source:   "sample.txt.new",
         target:   "sample.txt",
         cleanup:  [],
-        execute:  process.argv.map((arg) => `"${arg}"`).join(""),
-        progress: (step, percent) => { console.log(`sample: ${percent * 100}%: ${step}\n`) }
+        execute:  process.argv.map((arg) => `"${arg}"`).join(" "),
+        progress: (step, percent) => { console.log(`sample: ${percent * 100}%: ${step}`) }
     })
     console.log("sample start")
     if (process.argv[2] === "update")
