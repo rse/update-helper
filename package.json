@@ -1,0 +1,64 @@
+{
+    "name":                       "update-helper",
+    "homepage":                   "http://github.com/rse/update-helper",
+    "description":                "Application Update Process Helper Utility",
+    "version":                    "0.9.0",
+    "license":                    "MIT",
+    "author": {
+        "name":                   "Dr. Ralf S. Engelschall",
+        "email":                  "rse@engelschall.com",
+        "url":                    "http://engelschall.com"
+    },
+    "keywords": [
+                                  "update", "helper", "replace", "file"
+    ],
+    "repository": {
+        "type":                   "git",
+        "url":                    "git://github.com/rse/update-helper.git"
+    },
+    "bugs": {
+        "url":                    "http://github.com/rse/update-helper/issues"
+    },
+    "main":                       "./update-helper-api.js",
+    "bin": {
+        "update-helper-cli":      "./update-helper-cli.js"
+    },
+    "devDependencies": {
+        "babel-eslint":           "10.1.0",
+        "eslint":                 "7.11.0",
+        "eslint-config-standard": "15.0.0",
+        "eslint-plugin-standard": "4.0.2",
+        "eslint-plugin-promise":  "4.2.1",
+        "eslint-plugin-import":   "2.22.1",
+        "eslint-plugin-node":     "11.1.0",
+        "npm-run-all":            "4.1.5",
+        "pkg":                    "4.4.9",
+        "cross-zip-cli":          "1.0.0",
+        "shx":                    "0.3.2"
+    },
+    "dependencies" : {
+        "yargs":                  "16.1.0",
+        "execa":                  "4.0.3",
+        "@danieldietrich/copy":   "0.4.2",
+        "rimraf":                 "3.0.2",
+        "got":                    "11.8.0"
+    },
+    "engines": {
+        "node":                   ">=14.0.0"
+    },
+    "scripts": {
+        "prepublishOnly":         "npm-run-all -s lint",
+        "build":                  "npm-run-all -s lint package",
+        "clean":                  "npm-run-all -s package:clean",
+        "lint":                   "eslint --config eslint.yaml update-helper*.js",
+        "package":                "npm-run-all -s package:gen package:mv:win package:mv:mac package:mv:lnx package:zip:win package:zip:mac package:zip:lnx",
+        "package:gen":            "pkg -t node14-win-x64,node14-macos-x64,node14-linux-x64 -o update-helper-cli .",
+        "package:mv:win":         "shx mv update-helper-cli-win.exe update-helper-cli-win-x64.exe",
+        "package:mv:mac":         "shx mv update-helper-cli-macos   update-helper-cli-mac-x64",
+        "package:mv:lnx":         "shx mv update-helper-cli-linux   update-helper-cli-lnx-x64",
+        "package:zip:win":        "cross-zip update-helper-cli-win-x64.exe update-helper-cli-win-x64.zip",
+        "package:zip:mac":        "cross-zip update-helper-cli-mac-x64 update-helper-cli-mac-x64.zip",
+        "package:zip:lnx":        "cross-zip update-helper-cli-lnx-x64 update-helper-cli-lnx-x64.zip",
+        "package:clean":          "rm -f update-helper-cli-win-x64.zip update-helper-cli-win-x64.exe update-helper-cli-mac-x64.zip update-helper-cli-mac-x64 update-helper-cli-lnx-x64.zip update-helper-cli-lnx-x64"
+    }
+}
