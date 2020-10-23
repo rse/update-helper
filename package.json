@@ -41,7 +41,10 @@
         "execa":                  "4.0.3",
         "@danieldietrich/copy":   "0.4.2",
         "rimraf":                 "3.0.2",
-        "got":                    "11.8.0"
+        "got":                    "11.8.0",
+        "adm-zip":                "0.4.16",
+        "tmp":                    "0.2.1",
+        "mkdirp":                 "1.0.4"
     },
     "engines": {
         "node":                   ">=14.0.0"
