@@ -146,11 +146,15 @@ class UpdateHelper {
         if (this.options.execute !== "")
             args = args.concat([ "--execute", this.options.execute ])
         this.options.progress("executing CLI binary", 0.0)
-        await execa(cli, args, {
+        const proc = await execa(cli, args, {
+            stdio:    [ "ignore", "ignore", "ignore" ],
+            detached: true,
             env: {
                 UPDATE_HELPER_CLEANUP_DIR: tmpdir.name
             }
         })
+        proc.unref()
+        await new Promise((resolve) => setTimeout(resolve, 10 * 1000))
     }
 
     /*  perform the cleanup after upgrading  */
