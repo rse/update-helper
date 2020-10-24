@@ -37,6 +37,7 @@ const rimraf  = require("rimraf")
         "Usage: update-helper-cli" +
         " [-k|--kill <pid>]" +
         " [-w|--wait <ms>]" +
+        " [-r|--rename]" +
         " [-s|--source <file>|<directory>]" +
         " [-t|--target <file>|<directory>]" +
         " [-c|--cleanup <file>|<directory>]" +
@@ -59,6 +60,12 @@ const rimraf  = require("rimraf")
             type:     "number",
             describe: "milliseconds to wait after kill and before copying source to target",
             default:  0
+        })
+        .option("r", {
+            alias:    "rename",
+            type:     "boolean",
+            describe: "whether to rename the target before overwrite",
+            default:  false
         })
         .option("s", {
             alias:    "source",
@@ -107,7 +114,7 @@ const rimraf  = require("rimraf")
         throw new Error("mandatory target file or directory missing")
 
     /*  ensure source is readable  */
-    const readable = await fs.promises.access(opts.source, fs.constants.R_OK)
+    const readable = await fs.promises.access(opts.source, fs.constants.F_OK | fs.constants.R_OK)
         .then(() => true).catch(() => false)
     if (!readable)
         throw new Error(`source "${opts.source}" not readable`)
@@ -128,17 +135,41 @@ const rimraf  = require("rimraf")
     if (opts.wait > 0)
         await new Promise((resolve) => setTimeout(resolve, opts.wait))
 
+    /*  optionally rename an existing target  */
+    let wasRenamed = false
+    if (opts.rename) {
+        const exists = await fs.promises.access(opts.target, fs.constants.F_OK)
+            .then(() => true).catch(() => false)
+        if (exists) {
+            await fs.promises.rename(opts.target, path.join(opts.target, ".old"))
+            wasRenamed = true
+        }
+    }
+
     /*  copy source to target
         (which usually means to replace the calling application executable)  */
     await copy(opts.source, opts.target, {
         overwrite: true
     })
 
+    /*  optionally remove old target  */
+    if (wasRenamed) {
+        await new Promise((resolve, reject) => {
+            rimraf(path.join(opts.target, ".old"), { disableGlob: true }, (err) => {
+                if (err) reject(err)
+                else     resolve()
+            })
+        })
+    }
+
     /*  optionally cleanup resources
         (which usually means to remove the source)  */
     for (const resource of opts.cleanup) {
-        await new Promise((resolve) => {
-            rimraf(resource, { disableGlob: true }, resolve)
+        await new Promise((resolve, reject) => {
+            rimraf(resource, { disableGlob: true }, (err) => {
+                if (err) reject(err)
+                else     resolve()
+            })
         })
     }
 
