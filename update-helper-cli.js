@@ -142,7 +142,7 @@ const rimraf  = require("rimraf")
         const exists = await fs.promises.access(opts.target, fs.constants.F_OK)
             .then(() => true).catch(() => false)
         if (exists) {
-            await fs.promises.rename(opts.target, path.join(opts.target, ".old"))
+            await fs.promises.rename(opts.target, `${opts.target}.old`)
             wasRenamed = true
         }
     }
@@ -156,7 +156,7 @@ const rimraf  = require("rimraf")
     /*  optionally remove old target  */
     if (wasRenamed) {
         await new Promise((resolve, reject) => {
-            rimraf(path.join(opts.target, ".old"), { disableGlob: true }, (err) => {
+            rimraf(`${opts.target}.old`, { disableGlob: true }, (err) => {
                 if (err) reject(err)
                 else     resolve()
             })
