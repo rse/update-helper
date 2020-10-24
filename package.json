@@ -39,6 +39,7 @@
     "dependencies" : {
         "yargs":                  "16.1.0",
         "execa":                  "4.0.3",
+        "open":                   "7.3.0",
         "@danieldietrich/copy":   "0.4.2",
         "rimraf":                 "3.0.2",
         "got":                    "11.8.0",

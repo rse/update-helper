@@ -42,6 +42,7 @@ class UpdateHelper {
             target:   "",
             cleanup:  [],
             execute:  "",
+            open:     "",
             progress: (step, percent) => {}
         }, options)
 
@@ -145,6 +146,8 @@ class UpdateHelper {
             args = args.concat([ "--cleanup", this.options.cleanup ])
         if (this.options.execute !== "")
             args = args.concat([ "--execute", this.options.execute ])
+        if (this.options.open !== "")
+            args = args.concat([ "--open", this.options.open ])
         this.options.progress("executing CLI binary", 0.0)
         const proc = await execa(cli, args, {
             stdio:    [ "ignore", "ignore", "ignore" ],

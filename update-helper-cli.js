@@ -27,6 +27,7 @@
 const fs      = require("fs")
 const yargs   = require("yargs")
 const execa   = require("execa")
+const open    = require("open")
 const copy    = require("@danieldietrich/copy")
 const rimraf  = require("rimraf")
 
@@ -39,7 +40,8 @@ const rimraf  = require("rimraf")
         " [-s|--source <file>|<directory>]" +
         " [-t|--target <file>|<directory>]" +
         " [-c|--cleanup <file>|<directory>]" +
-        " [-e|--execute <file>]"
+        " [-e|--execute <file>]" +
+        " [-o|--open <file>]"
     const opts = yargs()
         .parserConfiguration({
             "set-placeholder-key": true,
@@ -80,6 +82,12 @@ const rimraf  = require("rimraf")
             alias:    "execute",
             type:     "string",
             describe: "execute program after update",
+            default:  ""
+        })
+        .option("o", {
+            alias:    "open",
+            type:     "string",
+            describe: "open program after update",
             default:  ""
         })
         .version(false)
@@ -135,7 +143,7 @@ const rimraf  = require("rimraf")
     }
 
     /*  optionally execute program
-        (which usually restarts the calling application again)  */
+        (which usually execute a particular post-update action)  */
     if (opts.execute !== "") {
         const proc = execa.command(opts.execute, {
             stdio:    [ "ignore", "ignore", "ignore" ],
@@ -143,6 +151,13 @@ const rimraf  = require("rimraf")
             shell:    true
         })
         proc.unref()
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+    }
+
+    /*  optionally open program
+        (which usually restarts the calling application again)  */
+    if (opts.open !== "") {
+        const proc = open(opts.open)
         await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
