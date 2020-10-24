@@ -157,7 +157,7 @@ const rimraf  = require("rimraf")
     /*  optionally open program
         (which usually restarts the calling application again)  */
     if (opts.open !== "") {
-        const proc = open(opts.open)
+        await open(opts.open)
         await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
