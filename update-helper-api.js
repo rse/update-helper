@@ -162,10 +162,10 @@ class UpdateHelper {
 
     /*  perform the cleanup after upgrading  */
     async cleanup () {
-        const cleanup = this.process.env.UPDATE_HELPER_CLEANUP_DIR
+        const cleanup = process.env.UPDATE_HELPER_CLEANUP_DIR
         if (typeof cleanup === "string" && cleanup !== "") {
             /*  cleanup environment  */
-            delete this.process.env.UPDATE_HELPER_CLEANUP_DIR
+            delete process.env.UPDATE_HELPER_CLEANUP_DIR
 
             /*  final sanity check  */
             let cli
