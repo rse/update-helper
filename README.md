@@ -13,7 +13,17 @@ update-helper
 Abstract
 --------
 
-This is a small utility... FIXME
+<b>Update Helper</b> is a small Application Programming Interface (API)
+and corresponding underlying Command-Line Interface (CLI) for updating
+an application. It is primarily intended to update a <i>packaged</i>
+Electron application (consisting of a single <code>.exe</code> or
+<code>.app</code> file) under Windows and macOS. The crux is that the
+application cannot do this itself, as its running Electron run-time
+is part of the application bundle and as long as it is running, it
+cannot replace itself on the filesystem. Instead, <b>Update Helper</b>
+downloads its CLI into a temporary directory and calls it to kill the
+application process, replace the application file and restart the
+application.
 
 Installation
 ------------
