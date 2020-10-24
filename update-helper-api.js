@@ -38,6 +38,7 @@ class UpdateHelper {
         this.options = Object.assign({}, {
             kill:     0,
             wait:     0,
+            rename:   false,
             source:   "",
             target:   "",
             cleanup:  [],
@@ -140,6 +141,8 @@ class UpdateHelper {
             args = args.concat([ "--kill", this.options.kill ])
         if (this.options.wait > 0)
             args = args.concat([ "--wait", this.options.wait ])
+        if (this.options.rename)
+            args.push("--rename")
         args = args.concat([ "--source", this.options.source ])
         args = args.concat([ "--target", this.options.target ])
         if (this.options.cleanup !== "")
