@@ -45,12 +45,6 @@ class UpdateHelper {
             progress: (step, percent) => {}
         }, options)
 
-        /*  sanity check usage  */
-        if (this.options.source === "")
-            throw new Error("mandatory option 'source' missing")
-        if (this.options.target === "")
-            throw new Error("mandatory option 'target' missing")
-
         /*  determine current system  */
         this.sys = ""
         if      (os.platform() === "win32")  this.sys = "win"
@@ -61,6 +55,12 @@ class UpdateHelper {
 
     /*  perform the upgrade operation  */
     async update () {
+        /*  sanity check usage  */
+        if (this.options.source === "")
+            throw new Error("mandatory option 'source' missing")
+        if (this.options.target === "")
+            throw new Error("mandatory option 'target' missing")
+
         /*  download ZIP archive of CLI binary  */
         const url = "https://github.com/rse/update-helper/releases/download/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.zip`
