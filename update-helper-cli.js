@@ -24,6 +24,7 @@
 */
 
 /*  external requirements  */
+const fs      = require("fs")
 const yargs   = require("yargs")
 const execa   = require("execa")
 const copy    = require("@danieldietrich/copy")
