@@ -30,14 +30,17 @@ const execa  = require("execa")
 const AdmZip = require("adm-zip")
 const tmp    = require("tmp")
 const mkdirp = require("mkdirp")
+const Sudoer = require("electron-sudo").default
 const pkg    = require("./package.json")
 
 class UpdateHelper {
     constructor (options = {}) {
         /*  provide option defaults  */
         this.options = Object.assign({}, {
+            name:     "Update Helper",
             kill:     0,
             wait:     0,
+            elevate:  false,
             rename:   false,
             source:   "",
             target:   "",
@@ -130,12 +133,13 @@ class UpdateHelper {
             cli = path.join(tmpdir.name, "update-helper-cli-mac-x64")
         else if (this.sys === "lnx")
             cli = path.join(tmpdir.name, "update-helper-cli-lnx-x64")
+        cli = path.resolve(cli)
         const accessible = await fs.promises.access(cli, fs.constants.F_OK | fs.constants.R_OK)
             .then(() => true).catch(() => false)
         if (!accessible)
             throw new Error("cannot find CLI binary in downloaded content")
 
-        /*  pass-through execution to CLI  */
+        /*  determine CLI arguments  */
         let args = []
         if (this.options.kill > 0)
             args = args.concat([ "--kill", this.options.kill ])
@@ -145,21 +149,41 @@ class UpdateHelper {
             args.push("--rename")
         args = args.concat([ "--source", this.options.source ])
         args = args.concat([ "--target", this.options.target ])
-        if (this.options.cleanup !== "")
-            args = args.concat([ "--cleanup", this.options.cleanup ])
+        for (const cleanup of this.options.cleanup)
+            args = args.concat([ "--cleanup", cleanup ])
         if (this.options.execute !== "")
             args = args.concat([ "--execute", this.options.execute ])
         if (this.options.open !== "")
             args = args.concat([ "--open", this.options.open ])
+
+        /*  determine CLI environment  */
+        const env = { ...process.env, UPDATE_HELPER_CLEANUP_DIR: tmpdir.name }
+
+        /*  pass-through execution to CLI  */
         this.options.progress("executing update helper", 0.0)
-        const proc = await execa(cli, args, {
-            stdio:    [ "ignore", "ignore", "ignore" ],
-            detached: true,
-            env: {
-                UPDATE_HELPER_CLEANUP_DIR: tmpdir.name
-            }
-        })
-        proc.unref()
+        if (this.options.elevate) {
+            /*  elevated execution  */
+            const escape = (arg) =>
+                arg.toString().replace(/"/g, '\\"').replace(/^(.*)$/, '"$1"')
+            const cmd = ([ cli ]).concat(args).map((arg) => escape(arg)).join(" ")
+            const sudoer = new Sudoer({
+                name: this.options.name
+            })
+            const proc = await sudoer.spawn(cmd, [], {
+                env: env
+            })
+            await new Promise((resolve) => { proc.on("close", () => { resolve() }) })
+            proc.unref()
+        }
+        else {
+            /*  standard execution  */
+            const proc = execa(cli, args, {
+                stdio:    [ "ignore", "ignore", "ignore" ],
+                detached: true,
+                env:      env
+            })
+            proc.unref()
+        }
         this.options.progress("executing update helper", 0.5)
 
         /*  await to be killed by CLI in case we are the target (as expected)  */
