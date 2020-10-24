@@ -164,7 +164,7 @@ class UpdateHelper {
         if (this.options.elevate) {
             /*  elevated execution  */
             const escape = (arg) =>
-                arg.toString().replace(/"/g, '\\"').replace(/^(.*)$/, '"$1"')
+                arg.toString().replace(/"/g, "\\\"").replace(/^(.*)$/, "\"$1\"")
             const cmd = ([ cli ]).concat(args).map((arg) => escape(arg)).join(" ")
             const sudoer = new Sudoer({
                 name: this.options.name
