@@ -45,8 +45,7 @@
         "got":                    "11.8.0",
         "adm-zip":                "0.4.16",
         "tmp":                    "0.2.1",
-        "mkdirp":                 "1.0.4",
-        "electron-sudo":          "4.0.12"
+        "mkdirp":                 "1.0.4"
     },
     "engines": {
         "node":                   ">=14.0.0"
