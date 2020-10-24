@@ -66,7 +66,7 @@ class UpdateHelper {
         /*  download ZIP archive of CLI binary  */
         const url = "https://github.com/rse/update-helper/releases/download/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.zip`
-        this.options.progress("downloading update helper distribution", 0.0)
+        this.options.progress("downloading update helper", 0.0)
         const req = got({
             method:       "GET",
             url:          url,
@@ -77,22 +77,22 @@ class UpdateHelper {
             let completed = p.transferred / p.total
             if (isNaN(completed))
                 completed = 0
-            this.options.progress("downloading update helper distribution", completed)
+            this.options.progress("downloading update helper", completed)
         })
         const response = await req
         const tmpfile = tmp.fileSync()
         await fs.promises.writeFile(tmpfile.name, response.body, { encoding: null })
-        this.options.progress("downloading update helper distribution", 1.0)
+        this.options.progress("downloading update helper", 1.0)
 
         /*  extract ZIP archive of CLI binary  */
-        this.options.progress("extracting update helper distribution", 0.0)
+        this.options.progress("extracting update helper", 0.0)
         const tmpdir = tmp.dirSync()
         const zip = new AdmZip(tmpfile.name)
         const dirCreated = {}
         const entries = zip.getEntries()
         for (let i = 0; i < entries.length; i++) {
             const entry = entries[i]
-            this.options.progress("extracting update helper distribution", i / entries.length)
+            this.options.progress("extracting update helper", i / entries.length)
 
             /*  determine result file path on filesystem  */
             const filePath = path.join(tmpdir.name, entry.entryName)
@@ -119,7 +119,7 @@ class UpdateHelper {
                 await fs.promises.chmod(filePath, (entry.attr >> 16) & 0x1ff)
             }
         }
-        this.options.progress("extracting update helper distribution", 1.0)
+        this.options.progress("extracting update helper", 1.0)
         tmpfile.removeCallback()
 
         /*  final sanity check  */
@@ -151,7 +151,7 @@ class UpdateHelper {
             args = args.concat([ "--execute", this.options.execute ])
         if (this.options.open !== "")
             args = args.concat([ "--open", this.options.open ])
-        this.options.progress("executing CLI binary", 0.0)
+        this.options.progress("executing update helper", 0.0)
         const proc = await execa(cli, args, {
             stdio:    [ "ignore", "ignore", "ignore" ],
             detached: true,
@@ -160,6 +160,7 @@ class UpdateHelper {
             }
         })
         proc.unref()
+        this.options.progress("executing update helper", 0.5)
 
         /*  await to be killed by CLI in case we are the target (as expected)  */
         if (this.options.kill > 0 && this.options.kill === process.pid)
