@@ -25,7 +25,6 @@
 
 /*  external requirements  */
 const fs      = require("fs")
-const path    = require("path")
 const yargs   = require("yargs")
 const execa   = require("execa")
 const open    = require("open")
