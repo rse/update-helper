@@ -97,6 +97,18 @@ const rimraf  = require("rimraf")
     if (opts.target === "")
         throw new Error("mandatory target file or directory missing")
 
+    /*  ensure source is readable  */
+    const readable = await fs.promises.access(opts.source, fs.constants.R_OK)
+        .then(() => true).catch(() => false)
+    if (!readable)
+        throw new Error(`source "${opts.source}" not readable`)
+
+    /*  ensure target is writeable  */
+    const writeable = await fs.promises.access(opts.target, fs.constants.W_OK)
+        .then(() => true).catch(() => false)
+    if (!writeable)
+        throw new Error(`target "${opts.target}" not writeable`)
+
     /*  optionally kill old program  */
     if (opts.kill > 0)
         process.kill(opts.kill, "SIGTERM")
