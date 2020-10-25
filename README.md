@@ -42,6 +42,8 @@ $ npm install update-helper
 Usage
 -----
 
+The following is a small example to demonstrate the usage of <b>Update Helper</b>:
+
 ```
 const fs           = require("fs")
 const path         = require("path")
@@ -94,6 +96,9 @@ const UpdateHelper = require("update-helper")
     await log(`sample: end (${process.pid})`)
 })()
 ```
+
+For a more elaborate real-life usage of <b>Update Helper</b>, check
+out the [LiVE Receiver](https://github.com/rse/life-receiver) application.
 
 License
 -------
