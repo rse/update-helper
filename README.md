@@ -15,15 +15,17 @@ Abstract
 
 <b>Update Helper</b> is a small Application Programming Interface (API)
 and corresponding underlying Command-Line Interface (CLI) for updating
-an application. It is primarily intended to update a <i>packaged</i>
-Electron application (consisting of a single <code>.exe</code> or
-<code>.app</code> file) under Windows and macOS. The crux is that the
-application cannot do this itself, as its running Electron run-time
-is part of the application bundle and as long as it is running, it
-cannot replace itself on the filesystem. Instead, <b>Update Helper</b>
-downloads its CLI into a temporary directory and calls it to kill the
-application process, replace the application file and restart the
-application.
+an application in an opinionated way.
+
+It is primarily intended to update a <i>packaged</i> Electron
+application (consisting of a single <code>.exe</code> or
+<code>.app</code> file) under Windows and macOS. The crux in this
+scenario is that the application cannot do this itself, as its running
+Electron run-time is part of the application bundle and as long as it is
+running, it cannot replace itself on the filesystem. Instead, <b>Update
+Helper</b> downloads a stand-alone packaged variant of its CLI into
+a temporary directory and calls it to kill the application process,
+replace the application file and restart the application.
 
 Installation
 ------------
@@ -33,7 +35,58 @@ $ npm install update-helper
 Usage
 -----
 
-FIXME
+```
+const fs           = require("fs")
+const path         = require("path")
+const UpdateHelper = require("update-helper")
+
+;(async () => {
+    /*  write a logfile as we cannot see all outputs on the console  */
+    const logfile = path.join(__dirname, "sample.log")
+    const log = (msg) =>
+        fs.promises.appendFile(logfile, `${msg}\n`, { encoding: "utf8" })
+
+    /*  indicate start  */
+    await log(`sample: begin (${process.pid})`)
+
+    /*  instantiate update helper  */
+    const uh = new UpdateHelper({
+        kill:     process.pid,
+        wait:     1000,
+        source:   "sample.new.txt",
+        target:   "sample.old.txt",
+        cleanup:  [],
+        execute:  [ ...process.argv.map((arg) => `"${arg}"`), "--restarted" ].join(" "),
+        progress: (step, percent) => { log(`sample: download CLI: ${(percent * 100).toFixed(0)}%: ${step}`) }
+    })
+
+    /*  dispatch according to arguments  */
+    if (process.argv.length === 2) {
+        /*  regular start  */
+        await fs.promises.writeFile("sample.old.txt", "OLD\n", { encoding: "utf8" })
+        await fs.promises.writeFile("sample.new.txt", "NEW\n", { encoding: "utf8" })
+        await log("sample: update: begin")
+        process.on("SIGINT", async (sig) => {
+            await log("sample: update: end (terminated by SIGINT)")
+            process.exit(0)
+        })
+        process.on("SIGTERM", async (sig) => {
+            await log("sample: update: end (terminated by SIGTERM)")
+            process.exit(0)
+        })
+        await uh.update()
+    }
+    else if (process.argv.length === 3 && process.argv[2] === "--restarted") {
+        /*  restart after update  */
+        await log("sample: cleanup: begin")
+        await uh.cleanup()
+        await log("sample: cleanup: end")
+    }
+
+    /*  indicate end  */
+    await log(`sample: end (${process.pid})`)
+})()
+```
 
 License
 -------
