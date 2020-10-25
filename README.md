@@ -44,7 +44,7 @@ Usage
 
 The following is a small example to demonstrate the usage of <b>Update Helper</b>:
 
-```
+```js
 const fs           = require("fs")
 const path         = require("path")
 const UpdateHelper = require("update-helper")
