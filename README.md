@@ -27,6 +27,9 @@ Helper</b> downloads a stand-alone packaged variant of its CLI into
 a temporary directory and calls it to kill the application process,
 replace the application file and restart the application.
 
+NOTICE: Currently, <b>Update Helper</b> just supports Windows, macOS and
+Linux, as the underlying CLI is packaged for those platforms only.
+
 Installation
 ------------
 
