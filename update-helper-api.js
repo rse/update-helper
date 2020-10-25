@@ -165,9 +165,9 @@ class UpdateHelper {
         proc.unref()
         this.options.progress("executing update helper", 0.5)
 
-        /*  await to be killed by CLI in case we are the target (as expected)  */
+        /*  wait to be killed by CLI in case we are the target (as expected)  */
         if (this.options.kill > 0 && this.options.kill === process.pid)
-            await new Promise((resolve) => setTimeout(resolve, 10 * 1000))
+            while (true) await new Promise((resolve) => setTimeout(resolve, 60 * 1000))
     }
 
     /*  perform the cleanup after upgrading  */
