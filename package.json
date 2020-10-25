@@ -10,7 +10,7 @@
         "url":                    "http://engelschall.com"
     },
     "keywords": [
-                                  "update", "helper", "replace", "file"
+                                  "update", "helper", "kill", "process", "replace", "file", "restart"
     ],
     "repository": {
         "type":                   "git",
