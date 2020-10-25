@@ -52,7 +52,8 @@ class UpdateHelper {
         if      (os.platform() === "win32")  this.sys = "win"
         else if (os.platform() === "darwin") this.sys = "mac"
         else if (os.platform() === "linux")  this.sys = "lnx"
-        else throw new Error(`current platform "${os.platform()}" is not supported`)
+        else throw new Error(`current platform "${os.platform()}" is not supported` +
+            " (as no underlying packaged CLI is available)")
     }
 
     /*  perform the upgrade operation  */
