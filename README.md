@@ -98,7 +98,7 @@ const UpdateHelper = require("update-helper")
 ```
 
 For a more elaborate real-life usage of <b>Update Helper</b>, check
-out the [LiVE Receiver](https://github.com/rse/life-receiver) application.
+out the [LiVE Receiver](https://github.com/rse/live-receiver) application.
 
 License
 -------
