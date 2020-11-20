@@ -66,7 +66,7 @@
         "package:zip:win":        "cross-zip update-helper-cli-win-x64.exe update-helper-cli-win-x64.zip",
         "package:zip:mac":        "cross-zip update-helper-cli-mac-x64 update-helper-cli-mac-x64.zip",
         "package:zip:lnx":        "cross-zip update-helper-cli-lnx-x64 update-helper-cli-lnx-x64.zip",
-        "package:sign":           "sh dsig.sh update-helper-cli-*.zip",
+        "package:sign":           "sh dsig.sh sign update-helper-cli-*.zip",
         "package:clean":          "rm -f update-helper-cli-win-x64.zip update-helper-cli-win-x64.exe update-helper-cli-mac-x64.zip update-helper-cli-mac-x64 update-helper-cli-lnx-x64.zip update-helper-cli-lnx-x64",
         "test":                   "node sample.js && cat sample.log && cat sample.old.txt && rm -f sample.*.txt sample.log"
     }
