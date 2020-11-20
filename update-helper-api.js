@@ -30,6 +30,7 @@ const execa  = require("execa")
 const AdmZip = require("adm-zip")
 const tmp    = require("tmp")
 const mkdirp = require("mkdirp")
+const DSIG   = require("dsig")
 const pkg    = require("./package.json")
 
 class UpdateHelper {
@@ -67,7 +68,7 @@ class UpdateHelper {
         /*  download ZIP archive of CLI binary  */
         const url = "https://github.com/rse/update-helper/releases/download/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.zip`
-        this.options.progress("downloading update helper", 0.0)
+        this.options.progress("downloading update helper archive", 0.0)
         const req = got({
             method:       "GET",
             url:          url,
@@ -78,12 +79,41 @@ class UpdateHelper {
             let completed = p.transferred / p.total
             if (isNaN(completed))
                 completed = 0
-            this.options.progress("downloading update helper", completed)
+            this.options.progress("downloading update helper archive", completed)
         })
         const response = await req
         const tmpfile = tmp.fileSync()
-        await fs.promises.writeFile(tmpfile.name, response.body, { encoding: null })
-        this.options.progress("downloading update helper", 1.0)
+        const payload = response.body
+        await fs.promises.writeFile(tmpfile.name, payload, { encoding: null })
+        this.options.progress("downloading update helper archive", 1.0)
+
+        /*  download signature  */
+        const url = "https://github.com/rse/update-helper/releases/download/" +
+            `${pkg.version}/update-helper-cli-${this.sys}-x64.sig`
+        this.options.progress("downloading update helper signature", 0.0)
+        const req = got({
+            method:       "GET",
+            url:          url,
+            headers:      { "User-Agent": `${pkg.name}/${pkg.version}` },
+            responseType: "buffer"
+        })
+        req.on("downloadProgress", (p) => {
+            let completed = p.transferred / p.total
+            if (isNaN(completed))
+                completed = 0
+            this.options.progress("downloading update helper signature", completed)
+        })
+        const response = await req
+        const signature = response.body.toString()
+        this.options.progress("downloading update helper signature", 1.0)
+
+        /*  read public key and verify signature
+            (throws an exception if not valid)  */
+        this.options.progress("verifying update helper signature", 0.0)
+        const publicKey = await fs.promises.readFile(
+            path.join(__dirname, "dsig.pk"), { encoding: "utf8" })
+        await DSIG.verify(payload, signature, publicKey)
+        this.options.progress("verifying update helper signature", 1.0)
 
         /*  extract ZIP archive of CLI binary  */
         this.options.progress("extracting update helper", 0.0)
@@ -94,7 +124,7 @@ class UpdateHelper {
         const isPOSIX = os.platform() !== "win32"
         for (let i = 0; i < entries.length; i++) {
             const entry = entries[i]
-            this.options.progress("extracting update helper", i / entries.length)
+            this.options.progress("extracting update helper program", i / entries.length)
 
             /*  determine result file path on filesystem  */
             const filePath = path.join(tmpdir.name, entry.entryName)
@@ -132,7 +162,7 @@ class UpdateHelper {
                 await fs.promises.writeFile(filePath, data, options)
             }
         }
-        this.options.progress("extracting update helper", 1.0)
+        this.options.progress("extracting update helper program", 1.0)
         tmpfile.removeCallback()
 
         /*  final sanity check  */
@@ -169,14 +199,14 @@ class UpdateHelper {
         const env = { ...process.env, UPDATE_HELPER_CLEANUP_DIR: tmpdir.name }
 
         /*  pass-through execution to CLI  */
-        this.options.progress("executing update helper", 0.0)
+        this.options.progress("executing update helper program", 0.0)
         const proc = execa(cli, args, {
             stdio:    [ "ignore", "ignore", "ignore" ],
             detached: true,
             env:      env
         })
         proc.unref()
-        this.options.progress("executing update helper", 0.5)
+        this.options.progress("executing update helper program", 0.5)
 
         /*  wait to be killed by CLI in case we are the target (as expected)  */
         if (this.options.kill > 0 && this.options.kill === process.pid)

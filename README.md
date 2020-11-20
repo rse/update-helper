@@ -29,7 +29,9 @@ replace the application file and restart the application.
 
 NOTICE: The CLI is about 25MB in size and hence downloaded externally,
 and intentionally not shipping with the API, to keep the to be updated
-application as small as possible.
+application as small as possible. For security reasons, the downloaded
+CLI is digitally signed and the digital signature is verified before it
+is executed.
 
 NOTICE: Currently, <b>Update Helper</b> just supports Windows, macOS and
 Linux, as the underlying CLI is packaged for those platforms only.

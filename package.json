@@ -2,7 +2,7 @@
     "name":                       "update-helper",
     "homepage":                   "http://github.com/rse/update-helper",
     "description":                "Application Update Process Helper Utility",
-    "version":                    "1.0.4",
+    "version":                    "1.0.5",
     "license":                    "MIT",
     "author": {
         "name":                   "Dr. Ralf S. Engelschall",
@@ -34,7 +34,9 @@
         "npm-run-all":            "4.1.5",
         "pkg":                    "4.4.9",
         "cross-zip-cli":          "1.0.0",
-        "shx":                    "0.3.3"
+        "shx":                    "0.3.3",
+        "json":                   "10.0.0",
+        "vpg":                    "0.9.3"
     },
     "dependencies" : {
         "yargs":                  "16.1.1",
@@ -45,7 +47,8 @@
         "got":                    "11.8.0",
         "adm-zip":                "0.5.0",
         "tmp":                    "0.2.1",
-        "mkdirp":                 "1.0.4"
+        "mkdirp":                 "1.0.4",
+        "dsig":                   "1.1.4"
     },
     "engines": {
         "node":                   ">=14.0.0"
