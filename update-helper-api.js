@@ -66,10 +66,10 @@ class UpdateHelper {
             throw new Error("mandatory option 'target' missing")
 
         /*  download ZIP archive of CLI binary  */
-        const url = "https://github.com/rse/update-helper/releases/download/" +
+        let url = "https://github.com/rse/update-helper/releases/download/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.zip`
         this.options.progress("downloading update helper archive", 0.0)
-        const req = got({
+        let req = got({
             method:       "GET",
             url:          url,
             headers:      { "User-Agent": `${pkg.name}/${pkg.version}` },
@@ -81,17 +81,17 @@ class UpdateHelper {
                 completed = 0
             this.options.progress("downloading update helper archive", completed)
         })
-        const response = await req
+        let response = await req
         const tmpfile = tmp.fileSync()
         const payload = response.body
         await fs.promises.writeFile(tmpfile.name, payload, { encoding: null })
         this.options.progress("downloading update helper archive", 1.0)
 
         /*  download signature  */
-        const url = "https://github.com/rse/update-helper/releases/download/" +
+        url = "https://github.com/rse/update-helper/releases/download/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.sig`
         this.options.progress("downloading update helper signature", 0.0)
-        const req = got({
+        req = got({
             method:       "GET",
             url:          url,
             headers:      { "User-Agent": `${pkg.name}/${pkg.version}` },
@@ -103,7 +103,7 @@ class UpdateHelper {
                 completed = 0
             this.options.progress("downloading update helper signature", completed)
         })
-        const response = await req
+        response = await req
         const signature = response.body.toString()
         this.options.progress("downloading update helper signature", 1.0)
 
