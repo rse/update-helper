@@ -26,8 +26,8 @@
     "devDependencies": {
         "babel-eslint":           "10.1.0",
         "eslint":                 "7.13.0",
-        "eslint-config-standard": "16.0.1",
-        "eslint-plugin-standard": "4.0.2",
+        "eslint-config-standard": "16.0.2",
+        "eslint-plugin-standard": "4.1.0",
         "eslint-plugin-promise":  "4.2.1",
         "eslint-plugin-import":   "2.22.1",
         "eslint-plugin-node":     "11.1.0",
@@ -37,13 +37,13 @@
         "shx":                    "0.3.3"
     },
     "dependencies" : {
-        "yargs":                  "16.1.0",
+        "yargs":                  "16.1.1",
         "execa":                  "4.1.0",
         "open":                   "7.3.0",
         "@danieldietrich/copy":   "0.4.2",
         "rimraf":                 "3.0.2",
         "got":                    "11.8.0",
-        "adm-zip":                "0.4.16",
+        "adm-zip":                "0.5.0",
         "tmp":                    "0.2.1",
         "mkdirp":                 "1.0.4"
     },
