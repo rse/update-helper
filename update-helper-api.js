@@ -66,7 +66,7 @@ class UpdateHelper {
             throw new Error("mandatory option 'target' missing")
 
         /*  download ZIP archive of CLI binary  */
-        let url = "https://github.com/rse/update-helper/releases/download/" +
+        let url = "https://github.oscdn.org/rse/update-helper/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.zip`
         this.options.progress("downloading update helper archive", 0.0)
         let req = got({
@@ -88,7 +88,7 @@ class UpdateHelper {
         this.options.progress("downloading update helper archive", 1.0)
 
         /*  download signature  */
-        url = "https://github.com/rse/update-helper/releases/download/" +
+        url = "https://github.oscdn.org/rse/update-helper/" +
             `${pkg.version}/update-helper-cli-${this.sys}-x64.sig`
         this.options.progress("downloading update helper signature", 0.0)
         req = got({
