@@ -116,7 +116,7 @@ class UpdateHelper {
         this.options.progress("verifying update helper signature", 1.0)
 
         /*  extract ZIP archive of CLI binary  */
-        this.options.progress("extracting update helper", 0.0)
+        this.options.progress("extracting update helper program", 0.0)
         const tmpdir = tmp.dirSync()
         const zip = new AdmZip(tmpfile.name)
         const dirCreated = {}
